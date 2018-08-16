@@ -312,7 +312,10 @@ class Schema(object):
             defaults = set(k for k in s if type(k) is Optional and
                            hasattr(k, 'default')) - coverage
             for default in defaults:
-                new[default.key] = default.default
+                if callable(default):
+                    new[default.key] = default.default()
+                else:
+                    new[default.key] = default.default
 
             return new
         if flavor == TYPE:
